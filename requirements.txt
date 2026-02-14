@@ -1,0 +1,5 @@
+dlt
+duckdb
+dbt-duckdb
+python-dotenv
+requests
