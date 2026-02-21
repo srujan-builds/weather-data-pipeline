@@ -46,8 +46,14 @@ def get_geocode():
             url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&appid={api_key}"
             response = requests.get(url)
             response.raise_for_status()
+            geocdode_data = response.json()
+
+            # ingesting the city data
+            for item in geocdode_data:
+                item['requested_city'] = city 
+
             logger.info(f"Geocode data for {city} loaded to table {GEOCODE_TABLE}.")
-            yield response.json()
+            yield geocdode_data
 
         except RequestException as e:
             logger.error(f"API Error for {city}", exc_info=True)
@@ -68,13 +74,19 @@ def get_weather(geocode_list):
         city = geocode["name"]
         lat = geocode["lat"]
         lon = geocode["lon"]
+        rqst_city = geocode["requested_city"]
 
         try:
             url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}"
             response = requests.get(url)
             response.raise_for_status()
+            weather_data = response.json()
+
+            # ingesting the city data
+            weather_data['requested_city'] = rqst_city 
+
             logger.info(f"Weather data for {city} loaded to table {WEATHER_TABLE}")
-            yield response.json()
+            yield weather_data
 
         except RequestException as e:
             logger.error(f"API error for coordinates {lat},{lon}: {e}", exc_info=True)
