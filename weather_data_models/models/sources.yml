@@ -1,0 +1,7 @@
+sources:
+  - name: source_data
+    database: weather_data
+    schema: raw_data
+    tables:
+      - name: raw_weather
+      - name: raw_geocode
