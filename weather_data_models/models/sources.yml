@@ -3,5 +3,91 @@ sources:
     database: weather_data
     schema: raw_data
     tables:
+
       - name: raw_weather
+        description: "Raw weather data loaded from Openweather API"
+        columns:
+          - name: _dlt_id
+            description: "dlt load id for the data"
+            tests:
+              - unique
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: VARCHAR
+          
+          - name: requested_city
+            description: "Data requesteed city from Openweather API"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: VARCHAR
+
+          - name: name
+            description: "Weather station name"
+            tests:
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: VARCHAR
+
+          - name: dt
+            description: "Unix timestamp at the time of reading"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: BIGINT
+
+          - name: main__temp
+            description: "Temperature of the city"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: DOUBLE
+
+          - name: main__humidity
+            description: "Humidity in city"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: BIGINT
+
+          - name: wind__speed
+            description: "wind speed in city"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: DOUBLE
+
+
       - name: raw_geocode
+        description: "Raw geocode data from geocode endpoint of Openweather API"
+        columns:
+
+          - name: requested_city
+            description: "Data requesteed city from Openweather API"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: VARCHAR
+
+          - name: lat
+            description: "Latitude of the city"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: DOUBLE
+                  
+          - name: lon
+            description: "Longitude of the city"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: DOUBLE
