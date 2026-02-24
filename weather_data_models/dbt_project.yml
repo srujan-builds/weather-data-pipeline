@@ -42,3 +42,7 @@ models:
     marts:
       +materialized: table
       +schema: marts
+
+# adding for dbt_expeactations package
+vars:
+  'dbt_date:time_zone': 'Asia/Kolkata'

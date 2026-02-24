@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: dim_location
+    description: "Dimension table containing unique cities and their exact coordinates."
+    columns:
+      - name: location_id
+        tests:
+          - unique
+          - not_null
+      - name: latitude
+        tests:
+          # Real-world coordinates check
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: -90
+                max_value: 90
+      - name: longitude
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: -180
+                max_value: 180
+
+  - name: fct_weather
+    description: "Incremental fact table of time-series weather events."
+    columns:
+      - name: weather_id
+        tests:
+          - unique
+          - not_null
+      - name: location_id
+        tests:
+          - not_null
+          # Ensures every weather reading belongs to a valid city in the dimension table
+          - relationships:
+              arguments:
+                to: ref('dim_location')
+                field: location_id
+      - name: temp_c
+        tests:
+          - not_null
+          # Validates your Kelvin to Celsius math -- CHECK
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: -60 
+                max_value: 60
+
+      - name: humidity_percent
+        tests:
+          # Humidity must be a valid percentage -- CHECK
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: wind_speed_mps
+        tests:
+          # Wind speed cannot be negative -- CHECK 
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 150
