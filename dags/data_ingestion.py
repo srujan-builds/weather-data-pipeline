@@ -10,17 +10,20 @@ import logging
 logger = logging.getLogger("weather_pipeline")
 logger.setLevel(logging.INFO)
 
-file_handler = logging.FileHandler("pipeline_run.log")
-file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
-logger.addHandler(file_handler)
+# commenting this out to stream the logs directly to airflow
+# file_handler = logging.FileHandler("pipeline_run.log")
+# file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+# logger.addHandler(file_handler)
 
+
+# Airflow will capture this logs
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
 logger.addHandler(console_handler)
 
 
 # Weather data for the following cities
-CITIES = ["Bangalore", "Hyderabad", "Pune", "Delhi", "Chennai", "Kolkata"]
+CITIES = ["Bangalore", "Hyderabad", "Pune", "Delhi", "Chennai", "Kolkata", "Kochi"]
 
 # raw tables
 GEOCODE_TABLE = "raw_geocode"
@@ -28,7 +31,10 @@ WEATHER_TABLE = "raw_weather"
 
 # Get the API_KEY
 env_path = join(dirname(__file__), ".env")
-load_dotenv(env_path)
+
+# making sure to load the env from docker not from local system. 
+load_dotenv(env_path, override=False)
+
 api_key = os.environ.get("API_KEY")
 
 # configure the dlt pipeline
