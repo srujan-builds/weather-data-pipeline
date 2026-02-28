@@ -37,6 +37,16 @@ models:
               arguments:
                 to: ref('dim_location')
                 field: location_id
+
+      - name: measured_at
+        tests:
+          - not_null
+          # This test ensures the max(measured_at) is from the last 24 hours
+          - dbt_expectations.expect_row_values_to_have_recent_data:
+              arguments:
+                datepart: day
+                interval: 1
+      
       - name: temp_c
         tests:
           - not_null

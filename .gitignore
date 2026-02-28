@@ -2,3 +2,14 @@ venv
 .env
 *.duckdb
 *.log
+
+# airflow specific
+logs/
+dags/__pycache__
+dags/weather_data.duckdb
+
+# dbt spepcific
+weather_data_models/target/
+weather_data_models/dbt_packages/
+weather_data_models/logs/
+weather_data_models/dbt_internal_packages/
